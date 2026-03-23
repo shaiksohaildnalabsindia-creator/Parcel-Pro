@@ -467,31 +467,31 @@ body {
             ☰
         </button>
         <div class="nav-dropdown">
-            <a data-page="/Dashboard/parcel_entry.html">
+            <a data-page="/Parcel-Pro/Dashboard/parcel_entry.html">
                 <span>📦</span>
                 <span>Parcel Entry</span>
             </a>
-            <a data-page="/Dashboard/parcel_entry_form.html">
+            <a data-page="/Parcel-Pro/Dashboard/parcel_entry_form.html">
                 <span>🔍</span>
                 <span>Parcel Scanner</span>
             </a>
-            <a data-page="/Dashboard/upload_sample_images.html">
+            <a data-page="/Parcel-Pro/Dashboard/upload_sample_images.html">
                 <span>📷</span>
                 <span>Upload Images</span>
             </a>
-            <a data-page="/Dashboard/delivered_today.html">
+            <a data-page="/Parcel-Pro/Dashboard/delivered_today.html">
                 <span>📅</span>
                 <span>Delivered Today</span>
             </a>
-            <a data-page="/Dashboard/total.html">
+            <a data-page="/Parcel-Pro/Dashboard/total.html">
                 <span>📊</span>
                 <span>Total Samples</span>
             </a>
-            <a data-page="/Dashboard/gallery.html">
+            <a data-page="/Parcel-Pro/Dashboard/gallery.html">
                 <span>🖼️</span>
                 <span>Sample Gallery</span>
             </a>
-            <a data-page="/Dashboard/Record.html">
+            <a data-page="/Parcel-Pro/Dashboard/Record.html">
                 <span>📋</span>
                 <span>Patients Record</span>
             </a>
@@ -503,43 +503,43 @@ body {
         <!-- Dashboard Grid (Initial Content) -->
         <div class="dashboard">
             <div class="grid">
-                <div class="box" data-page="/Dashboard/parcel_entry.html" tabindex="0" role="button">
+                <div class="box" data-page="/Parcel-Pro/Dashboard/parcel_entry.html" tabindex="0" role="button">
                     <div class="box-icon">📦📝</div>
                     <div class="box-text">Parcel Entry</div>
                     <div class="box-description">Create new parcel entries with detailed information</div>
                 </div>
 
-                <div class="box" data-page="/Dashboard/parcel_entry_form.html" tabindex="0" role="button">
+                <div class="box" data-page="/Parcel-Pro/Dashboard/parcel_entry_form.html" tabindex="0" role="button">
                     <div class="box-icon">📦🔍</div>
                     <div class="box-text">Parcel Scanner</div>
                     <div class="box-description">Scan and manage received parcels</div>
                 </div>
 
-                <div class="box" data-page="/Dashboard/upload_sample_images.html" tabindex="0" role="button">
+                <div class="box" data-page="/Parcel-Pro/Dashboard/upload_sample_images.html" tabindex="0" role="button">
                     <div class="box-icon">📷</div>
                     <div class="box-text">Upload Sample Images</div>
                     <div class="box-description">Upload and manage parcel images</div>
                 </div>
 
-                <div class="box" data-page="/Dashboard/delivered_today.html" tabindex="0" role="button">
+                <div class="box" data-page="/Parcel-Pro/Dashboard/delivered_today.html" tabindex="0" role="button">
                     <div class="box-icon">📅</div>
                     <div class="box-text">Delivered Today</div>
                     <div class="box-description">View today's delivered parcels</div>
                 </div>
 
-                <div class="box" data-page="/Dashboard/gallery.html" tabindex="0" role="button">
+                <div class="box" data-page="/Parcel-Pro/Dashboard/gallery.html" tabindex="0" role="button">
                     <div class="box-icon">🖼️</div>
                     <div class="box-text">Sample Gallery</div>
                     <div class="box-description">Browse all parcel images gallery</div>
                 </div>
 
-                <div class="box" data-page="/Dashboard/total.html" tabindex="0" role="button">
+                <div class="box" data-page="/Parcel-Pro/Dashboard/total.html" tabindex="0" role="button">
                     <div class="box-icon">📊</div>
                     <div class="box-text">Total Samples</div>
                     <div class="box-description">View complete parcel statistics</div>
                 </div>
                 
-                <div class="box" data-page="/Dashboard/Record.html" tabindex="0" role="button">
+                <div class="box" data-page="/Parcel-Pro/Dashboard/Record.html" tabindex="0" role="button">
                     <div class="box-icon">📋</div>
                     <div class="box-text">Patients Record</div>
                     <div class="box-description">View complete Patient Details</div>
@@ -726,7 +726,7 @@ body {
             });
             
             // Also attach to any links that might be in loaded content
-            const internalLinks = document.querySelectorAll('a[href*="/Dashboard/"]');
+            const internalLinks = document.querySelectorAll('a[href*="/Parcel-Pro/"]');
             internalLinks.forEach(link => {
                 if (!link.hasAttribute('data-page') && !link.getAttribute('onclick')) {
                     link.setAttribute('data-page', link.getAttribute('href'));
