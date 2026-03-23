@@ -2,525 +2,232 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Parcel Entry</title>
-  <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
-  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
-  <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
-  <link rel="manifest" href="site.webmanifest">
-  <meta name="theme-color" content="#ffffff">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>Parcel Entry | Parcel Pro</title>
+  <link rel="shortcut icon" href="../favicon.ico" type="image/x-icon">
+  <link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
+  <link rel="manifest" href="../site.webmanifest">
   <style>
     * {
-      box-sizing: border-box;
       margin: 0;
       padding: 0;
+      box-sizing: border-box;
     }
 
     body {
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
-      background: #f4f6f8;
+      background: linear-gradient(135deg, #f4f6f8 0%, #e9ecef 100%);
       color: #333;
       line-height: 1.6;
-      display: flex;
       min-height: 100vh;
     }
 
-    /* ---------- NEW SIDEBAR STYLE ---------- */
-    .sidebar {
-      width: 260px;
-      background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
-      color: #1e293b;
-      padding: 0;
-      position: fixed;
-      top: 0;
-      left: 0;
-      height: 100%;
-      transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      z-index: 1000;
-      overflow-y: auto;
-      box-shadow: 0 0 20px rgba(0, 0, 0, 0.08);
-      border-right: 1px solid #e2e8f0;
+    /* Main Container - Matching dashboard style */
+    .parcel-entry-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+      animation: fadeIn 0.5s ease;
     }
 
-    .sidebar-header {
-      padding: 25px 20px;
-      border-bottom: 1px solid #e2e8f0;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      color: white;
-      cursor: pointer;
-      transition: all 0.3s ease;
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
-    .sidebar-header:hover {
-      background: linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%);
-      transform: translateY(-1px);
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    /* Header - Matching dashboard */
+    .header {
+      text-align: center;
+      margin-bottom: 40px;
+      padding: 30px 20px;
     }
 
     .logo {
       display: flex;
       align-items: center;
-      gap: 12px;
-      font-size: 20px;
-      font-weight: 700;
+      justify-content: center;
+      gap: 15px;
+      margin-bottom: 15px;
     }
 
     .logo-icon {
-      font-size: 28px;
-      background: rgba(255, 255, 255, 0.2);
-      width: 40px;
-      height: 40px;
-      border-radius: 10px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: transform 0.3s ease;
+      font-size: 48px;
+      animation: bounce 2s infinite;
     }
 
-    .sidebar-header:hover .logo-icon {
-      transform: scale(1.1) rotate(5deg);
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
     }
 
     .logo-text {
-      font-size: 18px;
-      font-weight: 700;
-    }
-
-    .sidebar-subtitle {
-      font-size: 12px;
-      opacity: 0.8;
-      margin-top: 5px;
-      margin-left: 52px;
-      font-weight: 400;
-    }
-
-    .sidebar-menu {
-      padding: 20px 0;
-    }
-
-    .menu-section {
-      margin-bottom: 20px;
-    }
-
-    .menu-section-title {
-      font-size: 11px;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      color: #64748b;
-      font-weight: 600;
-      padding: 0 20px 8px 20px;
-      margin-bottom: 8px;
-      border-bottom: 1px solid #f1f5f9;
-    }
-
-    .menu-items {
-      display: flex;
-      flex-direction: column;
-      gap: 2px;
-    }
-
-    .menu-item {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      color: #475569;
-      text-decoration: none;
-      padding: 14px 20px;
-      font-size: 14px;
-      font-weight: 500;
-      transition: all 0.2s ease;
-      position: relative;
-      margin: 0 8px;
-      border-radius: 8px;
-    }
-
-    .menu-item:hover {
-      background: #f1f5f9;
-      color: #334155;
-      transform: translateX(4px);
-    }
-
-    .menu-item.active {
-      background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
-      color: white;
-      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
-    }
-
-    .menu-item.active::before {
-      content: '';
-      position: absolute;
-      left: -8px;
-      top: 50%;
-      transform: translateY(-50%);
-      width: 4px;
-      height: 60%;
-      background: #3b82f6;
-      border-radius: 0 2px 2px 0;
-    }
-
-    .menu-item-icon {
-      font-size: 18px;
-      width: 24px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .menu-item-text {
-      flex: 1;
-    }
-
-    .menu-item-badge {
-      background: #ef4444;
-      color: white;
-      font-size: 11px;
-      padding: 2px 6px;
-      border-radius: 10px;
-      font-weight: 600;
-    }
-
-    .external-link {
-      opacity: 0.7;
-      font-size: 12px;
-    }
-
-    .sidebar-footer {
-      padding: 20px;
-      margin-top: auto;
-      border-top: 1px solid #e2e8f0;
-      font-size: 12px;
-      color: #64748b;
-      text-align: center;
-    }
-
-    /* ---------- COLLAPSE BUTTON STYLES ---------- */
-     .collapse-expand {
-      position: absolute;
-      bottom: 20px;
-      Right: 12px;
-      width: 36px;
-      height: 36px;
-      background: #2a3a4d;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-       color: #9ba2c1;
-      transition: all 0.3s ease;
-      z-index: 101;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-     }
-
-     .collapse-expand:hover {
-      background: #354356;
-      color: white;
-      transform: scale(1.05);
-     }
-
-      .collapse-expand .icon {
-        width: 16px;
-        height: 16px;
-        transition: transform 0.3s ease;
-      }
-
-      /* ---------- COLLAPSED SIDEBAR STYLES ---------- */
-      .sidebar.collapsed {
-        width: 70px;
-      }
-
-      .sidebar.collapsed .logo-text,
-      .sidebar.collapsed .sidebar-subtitle,
-      .sidebar.collapsed .menu-section-title,
-      .sidebar.collapsed .menu-item-text,
-      .sidebar.collapsed .sidebar-footer {
-        display: none;
-        opacity: 0;
-        width: 0;
-        height: 0;
-        overflow: hidden;
-      }
-
-      .sidebar.collapsed .sidebar-header {
-        padding: 25px 10px;
-        justify-content: center;
-      }
-
-      .sidebar.collapsed .logo {
-        justify-content: center;
-        gap: 0;
-      }
-
-      .sidebar.collapsed .logo-icon {
-        margin: 0;
-        font-size: 32px;
-        width: 50px;
-        height: 50px;
-      }
-
-      .sidebar.collapsed .menu-item {
-        padding: 14px 0;
-        justify-content: center;
-        margin: 0 8px;
-        gap: 0;
-      }
-
-      .sidebar.collapsed .menu-item-icon {
-        margin: 0;
-        font-size: 22px;
-      }
-
-      .sidebar.collapsed .collapse-expand .icon {
-        transform: rotate(180deg);
-      }
-
-      .sidebar.collapsed .menu-item-badge {
-        position: absolute;
-        top: 8px;
-        right: 8px;
-        font-size: 9px;
-        padding: 1px 4px;
-        min-width: auto;
-      }
-    /* Tooltip for collapsed state */
-    .sidebar.collapsed .menu-item:hover::after {
-      content: attr(data-tooltip);
-      position: absolute;
-      left: 100%;
-      top: 50%;
-      transform: translateY(-50%);
-      background: #2a3a4d;
-      color: white;
-      padding: 8px 12px;
-      border-radius: 6px;
-      font-size: 12px;
-      white-space: nowrap;
-      margin-left: 8px;
-      z-index: 1000;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-      font-weight: 500;
-    }
-
-    .sidebar.collapsed .menu-item:hover::before {
-      content: '';
-      position: absolute;
-      left: 100%;
-      top: 50%;
-      transform: translateY(-50%);
-      border-width: 6px;
-      border-style: solid;
-      border-color: transparent transparent transparent #2a3a4d;
-      margin-left: -6px;
-      z-index: 1001;
-    }
-
-    /* ---------- MAIN CONTENT ---------- */
-    .main-content {
-      flex: 1;
-      margin-left: 260px;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      transition: margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-
-    /* ---------- MAIN CONTENT COLLAPSED ---------- */
-    .main-content.sidebar-collapsed {
-      margin-left: 70px;
-    }
-
-    /* ---------- TOPBAR ---------- */
-    .topbar {
-      background: #ffffff;
-      padding: 18px 25px;
-      display: flex;
-      align-items: center;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
-      position: sticky;
-      top: 0;
-      z-index: 100;
-      border-bottom: 1px solid #e2e8f0;
-    }
-
-    .menu-btn {
-      font-size: 22px;
-      background: none;
-      border: none;
-      cursor: pointer;
-      margin-right: 15px;
-      color: #4b5563;
-      padding: 6px;
-      border-radius: 8px;
-      transition: background-color 0.2s;
-      width: 40px;
-      height: 40px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      display: none; /* Hidden by default on desktop */
-    }
-
-    .menu-btn:hover {
-      background-color: #f3f4f6;
-    }
-
-    .page-info {
-      flex: 1;
+      font-size: 32px;
+      font-weight: 800;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
     }
 
     .page-title {
       font-size: 18px;
+      color: #6b7280;
+      font-weight: 500;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    /* Back Button */
+    .back-button {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 12px;
+      font-size: 14px;
+      font-weight: 500;
+      color: #4b5563;
+      cursor: pointer;
+      margin-bottom: 20px;
+      transition: all 0.3s ease;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+
+    .back-button:hover {
+      transform: translateX(-5px);
+      background: #f3f4f6;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    /* Form Card - Beautiful card design */
+    .form-card {
+      background: #ffffff;
+      border-radius: 24px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+      overflow: hidden;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    .form-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.12);
+    }
+
+    /* Card Header */
+    .card-header {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 30px;
+      text-align: center;
+    }
+
+    .card-header h2 {
+      font-size: 28px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      margin-bottom: 8px;
+    }
+
+    .card-header p {
+      opacity: 0.9;
+      font-size: 14px;
+    }
+
+    /* Card Content */
+    .card-content {
+      padding: 40px;
+    }
+
+    /* Form Groups */
+    .form-group {
+      margin-bottom: 28px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 10px;
+      color: #374151;
       font-weight: 600;
-      color: #111827;
+      font-size: 14px;
       display: flex;
       align-items: center;
       gap: 8px;
     }
 
-    .page-subtitle {
-      font-size: 13px;
-      color: #6b7280;
-      margin-top: 2px;
-    }
-
-    .user-menu {
-      display: flex;
-      align-items: center;
-      gap: 15px;
-    }
-
-    .user-avatar {
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: white;
-      font-weight: 600;
-      font-size: 16px;
-    }
-
-    /* ---------- FORM CONTAINER ---------- */
-    .form-wrapper {
-      flex: 1;
-      padding: 30px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: #f8fafc;
-    }
-
-    .form-container {
-      width: 100%;
-      max-width: 500px;
-      background: #ffffff;
-      border-radius: 16px;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
-      overflow: hidden;
-      animation: slideIn 0.5s ease;
-      border: 1px solid #e2e8f0;
-    }
-
-    @keyframes slideIn {
-      from {
-        opacity: 0;
-        transform: translateY(-20px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    .header {
-      background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
-      color: white;
-      padding: 25px;
-      text-align: center;
-    }
-
-    .header h2 {
-      font-size: 24px;
-      font-weight: 600;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-    }
-
-    .form-content {
-      padding: 30px;
-    }
-
-    .form-group {
-      margin-bottom: 25px;
-    }
-
-    .form-group label {
-      display: block;
-      margin-bottom: 8px;
-      color: #374151;
-      font-weight: 500;
-      font-size: 14px;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .form-group label::before {
-      content: '•';
-      color: #3b82f6;
+    .form-group label i {
       font-size: 18px;
+    }
+
+    .input-wrapper {
+      position: relative;
+    }
+
+    .input-icon {
+      position: absolute;
+      left: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 18px;
+      color: #9ca3af;
     }
 
     .form-group input {
       width: 100%;
-      padding: 14px 16px;
-      border: 1.5px solid #d1d5db;
-      border-radius: 10px;
+      padding: 14px 16px 14px 48px;
+      border: 2px solid #e5e7eb;
+      border-radius: 14px;
       font-size: 15px;
       transition: all 0.3s ease;
       background: #f9fafb;
+      font-family: inherit;
     }
 
     .form-group input:focus {
       outline: none;
-      border-color: #3b82f6;
+      border-color: #667eea;
       background: #ffffff;
-      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+      box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
     }
 
     .form-group input.error {
-      border-color: #dc3545;
+      border-color: #ef4444;
+      background: #fef2f2;
     }
 
     .form-group input.success {
       border-color: #10b981;
+      background: #f0fdf4;
     }
 
     .error-message {
-      color: #dc3545;
-      font-size: 13px;
-      margin-top: 5px;
+      color: #ef4444;
+      font-size: 12px;
+      margin-top: 8px;
       display: none;
-      padding-left: 8px;
+      padding-left: 12px;
     }
 
+    /* Button Group */
     .button-group {
       display: flex;
       gap: 15px;
-      margin-top: 30px;
+      margin-top: 35px;
     }
 
     button {
       flex: 1;
-      padding: 15px;
+      padding: 14px 24px;
       border: none;
-      border-radius: 10px;
+      border-radius: 14px;
       font-size: 15px;
       font-weight: 600;
       cursor: pointer;
@@ -529,16 +236,22 @@
       align-items: center;
       justify-content: center;
       gap: 10px;
+      font-family: inherit;
     }
 
     .submit-btn {
-      background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
       color: white;
+      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
     }
 
     .submit-btn:hover:not(:disabled) {
       transform: translateY(-2px);
-      box-shadow: 0 5px 15px rgba(59, 130, 246, 0.3);
+      box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+    }
+
+    .submit-btn:active:not(:disabled) {
+      transform: translateY(0);
     }
 
     .submit-btn:disabled {
@@ -549,7 +262,7 @@
     .clear-btn {
       background: #f3f4f6;
       color: #4b5563;
-      border: 1.5px solid #d1d5db;
+      border: 2px solid #e5e7eb;
     }
 
     .clear-btn:hover {
@@ -557,36 +270,42 @@
       transform: translateY(-2px);
     }
 
+    /* Status Messages */
     .status-container {
       margin-top: 25px;
       padding: 20px;
-      border-radius: 10px;
+      border-radius: 14px;
       display: none;
-      animation: fadeIn 0.5s ease;
-      border: 1px solid;
+      animation: slideIn 0.4s ease;
     }
 
-    @keyframes fadeIn {
-      from { opacity: 0; }
-      to { opacity: 1; }
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateY(-10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
 
     .status-success {
-      background: #f0fdf4;
+      background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+      border: 1px solid #bbf7d0;
       color: #166534;
-      border-color: #bbf7d0;
     }
 
     .status-error {
-      background: #fef2f2;
+      background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%);
+      border: 1px solid #fecaca;
       color: #991b1b;
-      border-color: #fecaca;
     }
 
     .status-loading {
-      background: #fffbeb;
+      background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
+      border: 1px solid #fde68a;
       color: #92400e;
-      border-color: #fde68a;
       text-align: center;
     }
 
@@ -594,9 +313,9 @@
       display: inline-block;
       width: 20px;
       height: 20px;
-      border: 3px solid rgba(59, 130, 246, 0.3);
+      border: 3px solid rgba(102, 126, 234, 0.3);
       border-radius: 50%;
-      border-top-color: #3b82f6;
+      border-top-color: #667eea;
       animation: spin 1s linear infinite;
     }
 
@@ -604,22 +323,24 @@
       to { transform: rotate(360deg); }
     }
 
-    /* Toast notification */
+    /* Toast Notification - Beautiful floating notification */
     .toast {
       position: fixed;
-      top: 20px;
-      right: 20px;
-      padding: 15px 20px;
-      border-radius: 12px;
+      bottom: 30px;
+      right: 30px;
+      padding: 16px 24px;
+      border-radius: 16px;
       color: white;
       font-weight: 500;
-      box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
       z-index: 1000;
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 12px;
       transform: translateX(120%);
       transition: transform 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+      max-width: 400px;
+      backdrop-filter: blur(10px);
     }
 
     .toast.show {
@@ -634,44 +355,35 @@
       background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
     }
 
-    .toast-icon {
-      font-size: 20px;
+    .toast-info {
+      background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
     }
 
-    /* ---------- MOBILE STYLES - FIXED ---------- */
+    .toast-icon {
+      font-size: 24px;
+    }
+
+    /* Responsive Design */
     @media (max-width: 768px) {
-      .sidebar {
-        transform: translateX(-100%);
-        width: 280px;
+      .parcel-entry-container {
+        padding: 15px;
       }
 
-      .sidebar.open {
-        transform: translateX(0);
+      .header {
+        padding: 20px 15px;
+        margin-bottom: 30px;
       }
 
-      .sidebar.collapsed {
-        width: 70px;
+      .logo-icon {
+        font-size: 36px;
       }
 
-      .main-content {
-        margin-left: 0 !important; /* Force no margin on mobile */
+      .logo-text {
+        font-size: 24px;
       }
 
-      .main-content.sidebar-collapsed {
-        margin-left: 70px !important;
-      }
-
-      /* SHOW the hamburger menu on mobile */
-      .menu-btn {
-        display: flex !important; /* Force display on mobile */
-      }
-
-      .form-wrapper {
-        padding: 20px;
-      }
-
-      .form-content {
-        padding: 20px;
+      .card-content {
+        padding: 25px;
       }
 
       .button-group {
@@ -682,168 +394,155 @@
         width: 100%;
       }
 
-      .user-menu {
-        display: none;
+      .toast {
+        bottom: 20px;
+        right: 20px;
+        left: 20px;
+        max-width: none;
       }
     }
 
-    /* Focus styles for accessibility */
+    /* Focus styles */
     .form-group input:focus-visible,
     button:focus-visible,
-    .menu-item:focus-visible,
-    .menu-btn:focus-visible,
-    .sidebar-header:focus-visible {
-      outline: 2px solid #3b82f6;
+    .back-button:focus-visible {
+      outline: 2px solid #667eea;
       outline-offset: 2px;
+    }
+
+    /* Character counter */
+    .char-counter {
+      text-align: right;
+      font-size: 11px;
+      color: #9ca3af;
+      margin-top: 5px;
+    }
+
+    /* Tooltip */
+    [data-tooltip] {
+      position: relative;
+      cursor: help;
+    }
+
+    [data-tooltip]:before {
+      content: attr(data-tooltip);
+      position: absolute;
+      bottom: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      padding: 5px 10px;
+      background: #1f2937;
+      color: white;
+      font-size: 12px;
+      border-radius: 8px;
+      white-space: nowrap;
+      display: none;
+      z-index: 10;
+      margin-bottom: 5px;
+    }
+
+    [data-tooltip]:hover:before {
+      display: block;
     }
   </style>
 </head>
 <body>
 
-<!-- Sidebar -->
-<aside class="sidebar" id="sidebar">
-  <div class="sidebar-header" onclick="goToDashboard()" tabindex="0" role="button">
+<div class="parcel-entry-container">
+  <!-- Header - Matching dashboard style -->
+  <header class="header">
     <div class="logo">
       <div class="logo-icon">📦</div>
-      <div class="logo-text">Parcel Pro</div>
+      <h1 class="logo-text">Parcel Pro</h1>
     </div>
-    <div class="sidebar-subtitle">Delivery Management System</div>
-  </div>
-
-  <div class="sidebar-menu">
-    <div class="menu-section">
-      <div class="menu-section-title">Operations</div>
-      <div class="menu-items">
-        <a href="/Dashboard/parcel_entry" class="menu-item active">
-          <span class="menu-item-icon">📦</span>
-          <span class="menu-item-text">Parcel Entry</span>
-        </a>
-        <a href="/Dashboard/parcel_entry_form" class="menu-item">
-          <span class="menu-item-icon">🔍</span>
-          <span class="menu-item-text">Parcel Scanner</span>
-        </a>
-        <a href="/Dashboard/upload_sample_images" class="menu-item">
-          <span class="menu-item-icon">📷</span>
-          <span class="menu-item-text">Upload Images</span>
-          <span class="menu-item-badge">New</span>
-        </a>
-      </div>
-    </div>
-
-    <div class="menu-section">
-      <div class="menu-section-title">Reports</div>
-      <div class="menu-items">
-        <a href="/Dashboard/delivered_today" class="menu-item">
-          <span class="menu-item-icon">📅</span>
-          <span class="menu-item-text">Delivered Today</span>
-        </a>
-        <a href="/Dashboard/total" class="menu-item">
-          <span class="menu-item-icon">📊</span>
-          <span class="menu-item-text">Total Samples</span>
-        </a>
-        <a href="/Dashboard/gallery" class="menu-item">
-          <span class="menu-item-icon">🖼️</span>
-          <span class="menu-item-text">Sample Gallery</span>
-        </a>
-        <a href="/Dashboard/Record" class="menu-item" data-tooltip="Patients Record">
-          <span class="menu-item-icon">📋</span>
-          <span class="menu-item-text">Patients Records</span>
-        </a>
-      </div>
-    </div>
-  </div>
-
-  <!-- Collapse Button -->
-  <button class="collapse-expand" 
-          aria-label="Collapse/Expand sidebar" 
-          type="button" 
-          onclick="toggleCollapse()">
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="icon" aria-hidden="true">
-      <path fill-rule="evenodd" clip-rule="evenodd" d="M157.3 413.2c-6.6 0-13.1-2.5-18.2-7.5L7.5 274c-10-10-10-26.3 0-36.3L139.2 106c10-10 26.3-10 36.3 0s10 26.3 0 36.3L62 255.9l113.5 113.5c10 10 10 26.3 0 36.3-5 5-11.6 7.5-18.2 7.5"></path>
-      <path fill-rule="evenodd" clip-rule="evenodd" d="M290.1 285H73.5c-14.2 0-25.7-11.5-25.7-25.7s11.5-25.7 25.7-25.7h216.7c14.2 0 25.7 11.5 25.7 25.7-.1 14.2-11.6 25.7-25.8 25.7m195.2 0h-94.4c-14.2 0-25.7-11.5-25.7-25.7s11.5-25.7 25.7-25.7h94.4c14.2 0 25.7 11.5 25.7 25.7S499.5 285 485.3 285m0 125.1H342c-14.2 0-25.7-11.5-25.7-25.7s11.5-25.7 25.7-25.7h143.3c14.2 0 25.7 11.5 25.7 25.7s-11.5 25.7-25.7 25.7m0-250.1H342c-14.2 0-25.7-11.5-25.7-25.7s11.5-25.7 25.7-25.7h143.3c14.2 0 25.7 11.5 25.7 25.7S499.5 160 485.3 160"></path>
-    </svg>
-  </button>
-
-  <div class="sidebar-footer">
-    <div>© 2024 Parcel Pro</div>
-    <div style="font-size: 11px; opacity: 0.6; margin-top: 5px;">v2.1.0</div>
-  </div>
-</aside>
-
-<!-- Main Content -->
-<div class="main-content" id="mainContent">
-  <!-- Topbar -->
-  <header class="topbar">
-    <button class="menu-btn" onclick="toggleSidebar()" aria-label="Toggle menu">
-      ☰
-    </button>
-    <div class="page-info">
-      <div class="page-title">
-        <span>📦</span>
-        <span>Parcel Entry</span>
-      </div>
-      <div class="page-subtitle">Add new parcels to the tracking system</div>
-    </div>
-    <div class="user-menu">
-      <div class="user-avatar">U</div>
-    </div>
+    <p class="page-title">Add new parcels to the tracking system with ease</p>
   </header>
 
-  <!-- Form Content -->
-  <div class="form-wrapper">
-    <div class="form-container">
-      <div class="header">
-        <h2>📦 Parcel Entry</h2>
-        <p style="opacity: 0.9; font-size: 14px; margin-top: 5px;">Add new parcel to the system</p>
-      </div>
+  <!-- Back Button -->
+  <div style="max-width: 600px; margin: 0 auto 20px auto;">
+    <button class="back-button" onclick="goBack()">
+      <span>←</span>
+      <span>Back to Dashboard</span>
+    </button>
+  </div>
 
-      <div class="form-content">
-        <div class="form-group">
-          <label for="trackingNumber">Tracking Number</label>
+  <!-- Form Card -->
+  <div class="form-card">
+    <div class="card-header">
+      <h2>
+        <span>📦</span>
+        <span>Parcel Entry</span>
+      </h2>
+      <p>Fill in the details to add a new parcel</p>
+    </div>
+
+    <div class="card-content">
+      <div class="form-group">
+        <label>
+          <span>🔢</span>
+          <span>Tracking Number</span>
+        </label>
+        <div class="input-wrapper">
+          <span class="input-icon">📋</span>
           <input 
             type="text" 
             id="trackingNumber" 
             placeholder="Enter tracking number (e.g., TRK123456789)"
             autocomplete="off"
             autocapitalize="characters"
+            maxlength="50"
           >
-          <div class="error-message" id="trackingError">Please enter a valid tracking number</div>
         </div>
+        <div class="error-message" id="trackingError">Please enter a valid tracking number</div>
+        <div class="char-counter" id="trackingCounter">0/50 characters</div>
+      </div>
 
-        <div class="form-group">
-          <label for="bookingDate">Booking Date</label>
+      <div class="form-group">
+        <label>
+          <span>📅</span>
+          <span>Booking Date</span>
+        </label>
+        <div class="input-wrapper">
+          <span class="input-icon">🗓️</span>
           <input 
             type="date" 
             id="bookingDate"
-            max=""
           >
-          <div class="error-message" id="dateError">Please select a valid date</div>
         </div>
+        <div class="error-message" id="dateError">Please select a valid date</div>
+      </div>
 
-        <div class="form-group">
-          <label for="fromAddress">From Address</label>
+      <div class="form-group">
+        <label>
+          <span>📍</span>
+          <span>From Address</span>
+        </label>
+        <div class="input-wrapper">
+          <span class="input-icon">🏠</span>
           <input 
             type="text" 
             id="fromAddress" 
-            placeholder="Enter sender's address"
+            placeholder="Enter sender's full address"
             autocomplete="off"
+            maxlength="200"
           >
-          <div class="error-message" id="addressError">Please enter a valid address</div>
         </div>
-
-        <div class="button-group">
-          <button class="submit-btn" onclick="submitParcel()" id="submitBtn">
-            <span>📦</span>
-            <span>Add Parcel</span>
-          </button>
-          <button class="clear-btn" onclick="clearForm()">
-            <span>🗑️</span>
-            <span>Clear Form</span>
-          </button>
-        </div>
-
-        <div class="status-container" id="status"></div>
+        <div class="error-message" id="addressError">Please enter a valid address (min. 5 characters)</div>
+        <div class="char-counter" id="addressCounter">0/200 characters</div>
       </div>
+
+      <div class="button-group">
+        <button class="submit-btn" id="submitBtn">
+          <span>📦</span>
+          <span>Add Parcel</span>
+        </button>
+        <button class="clear-btn" onclick="clearForm()">
+          <span>🗑️</span>
+          <span>Clear Form</span>
+        </button>
+      </div>
+
+      <div class="status-container" id="status"></div>
     </div>
   </div>
 </div>
@@ -855,111 +554,56 @@
 const API_URL = "https://script.google.com/macros/s/AKfycbxrtcZeaWfHYcTfEhidGXr3mxzmrUTaN-zliEJUGlbb8kBl48gby01-mEHxEuV2WlFzrA/exec";
 
 // DOM Elements
-const sidebar = document.getElementById('sidebar');
-const mainContent = document.getElementById('mainContent');
 const trackingInput = document.getElementById('trackingNumber');
 const dateInput = document.getElementById('bookingDate');
 const addressInput = document.getElementById('fromAddress');
 const submitBtn = document.getElementById('submitBtn');
 const statusDiv = document.getElementById('status');
 const toast = document.getElementById('toast');
+const trackingCounter = document.getElementById('trackingCounter');
+const addressCounter = document.getElementById('addressCounter');
 
 // Set max date to today
-dateInput.max = new Date().toISOString().split('T')[0];
+const today = new Date().toISOString().split('T')[0];
+dateInput.max = today;
+dateInput.value = today;
 
-/* ---------- COLLAPSE FUNCTIONS ---------- */
-function toggleCollapse() {
-  const sidebar = document.getElementById('sidebar');
-  const mainContent = document.getElementById('mainContent');
-  
-  sidebar.classList.toggle('collapsed');
-  mainContent.classList.toggle('sidebar-collapsed');
-  
-  // Save state to localStorage
-  const isCollapsed = sidebar.classList.contains('collapsed');
-  localStorage.setItem('sidebarCollapsed', isCollapsed);
-  
-  // Update tooltips for all menu items
-  updateMenuTooltips();
-}
-
-function updateMenuTooltips() {
-  const sidebar = document.getElementById('sidebar');
-  const isCollapsed = sidebar.classList.contains('collapsed');
-  
-  if (isCollapsed) {
-    // Add tooltips if collapsed
-    document.querySelectorAll('.menu-item').forEach(item => {
-      const text = item.querySelector('.menu-item-text').textContent;
-      item.setAttribute('data-tooltip', text);
-    });
+// Character counters
+trackingInput.addEventListener('input', () => {
+  const length = trackingInput.value.length;
+  trackingCounter.textContent = `${length}/50 characters`;
+  if (length > 45) {
+    trackingCounter.style.color = '#f59e0b';
   } else {
-    // Remove tooltips if expanded
-    document.querySelectorAll('.menu-item').forEach(item => {
-      item.removeAttribute('data-tooltip');
-    });
+    trackingCounter.style.color = '#9ca3af';
   }
-}
+  validateForm();
+});
 
-// Initialize sidebar state on page load
-window.addEventListener('load', () => {
-  const sidebar = document.getElementById('sidebar');
-  const mainContent = document.getElementById('mainContent');
+addressInput.addEventListener('input', () => {
+  const length = addressInput.value.length;
+  addressCounter.textContent = `${length}/200 characters`;
+  if (length > 180) {
+    addressCounter.style.color = '#f59e0b';
+  } else {
+    addressCounter.style.color = '#9ca3af';
+  }
+  validateForm();
+});
+
+// Show toast notification
+function showToast(message, type = 'success') {
+  toast.className = `toast toast-${type}`;
+  toast.innerHTML = `
+    <span class="toast-icon">${type === 'success' ? '✅' : type === 'error' ? '❌' : 'ℹ️'}</span>
+    <span>${message}</span>
+  `;
+  toast.classList.add('show');
   
-  // Check if sidebar was collapsed previously
-  const wasCollapsed = localStorage.getItem('sidebarCollapsed') === 'true';
-  
-  if (wasCollapsed) {
-    sidebar.classList.add('collapsed');
-    mainContent.classList.add('sidebar-collapsed');
-  }
-  
-  // Update tooltips based on initial state
-  updateMenuTooltips();
-});
-
-// Go to Dashboard function
-function goToDashboard() {
-  window.location.href = "/Dashboard/";
+  setTimeout(() => {
+    toast.classList.remove('show');
+  }, 3000);
 }
-
-// Toggle sidebar for mobile
-function toggleSidebar() {
-  sidebar.classList.toggle('open');
-  console.log('Sidebar toggled, class list:', sidebar.classList);
-}
-
-// Close sidebar when clicking outside on mobile
-document.addEventListener('click', (e) => {
-  if (window.innerWidth <= 768 && 
-      !sidebar.contains(e.target) && 
-      !e.target.classList.contains('menu-btn')) {
-    sidebar.classList.remove('open');
-  }
-});
-
-// Close sidebar when pressing Escape key
-document.addEventListener('keydown', (e) => {
-  if (e.key === 'Escape' && sidebar.classList.contains('open')) {
-    sidebar.classList.remove('open');
-  }
-});
-
-// Auto-close sidebar on window resize to desktop
-window.addEventListener('resize', () => {
-  if (window.innerWidth > 768) {
-    sidebar.classList.remove('open');
-    // Ensure collapsed state is maintained on desktop
-    const wasCollapsed = localStorage.getItem('sidebarCollapsed') === 'true';
-    if (wasCollapsed) {
-      sidebar.classList.add('collapsed');
-      mainContent.classList.add('sidebar-collapsed');
-    } else {
-      sidebar.classList.remove('collapsed');
-      mainContent.classList.remove('sidebar-collapsed');
-    }
-  }
-});
 
 // Validation functions
 function validateForm() {
@@ -989,7 +633,7 @@ function validateForm() {
     showError(addressInput, 'addressError', 'From address is required');
     isValid = false;
   } else if (addressInput.value.trim().length < 5) {
-    showError(addressInput, 'addressError', 'Please enter a complete address');
+    showError(addressInput, 'addressError', 'Please enter a complete address (min. 5 characters)');
     isValid = false;
   } else {
     showSuccess(addressInput, 'addressError');
@@ -1012,25 +656,10 @@ function showSuccess(input, errorId) {
   document.getElementById(errorId).style.display = 'none';
 }
 
-// Show toast notification
-function showToast(message, type = 'success') {
-  toast.textContent = message;
-  toast.className = `toast toast-${type}`;
-  toast.innerHTML = `
-    <span class="toast-icon">${type === 'success' ? '✅' : '❌'}</span>
-    <span>${message}</span>
-  `;
-  toast.classList.add('show');
-  
-  setTimeout(() => {
-    toast.classList.remove('show');
-  }, 3000);
-}
-
 // Clear form
 function clearForm() {
   trackingInput.value = '';
-  dateInput.value = '';
+  dateInput.value = today;
   addressInput.value = '';
   
   // Clear validation states
@@ -1045,34 +674,48 @@ function clearForm() {
   
   statusDiv.style.display = 'none';
   trackingInput.focus();
+  
+  // Reset counters
+  trackingCounter.textContent = '0/50 characters';
+  addressCounter.textContent = '0/200 characters';
+  
+  showToast('Form cleared successfully', 'info');
 }
 
-// Submit parcel - Using the original working logic
+// Go back to dashboard
+function goBack() {
+  // If in SPA mode, use history.back()
+  if (window.history.length > 1) {
+    window.history.back();
+  } else {
+    window.location.href = '/Dashboard/';
+  }
+}
+
+// Submit parcel
 function submitParcel() {
-  // Validate form
   if (!validateForm()) {
     showToast('Please fix the errors in the form', 'error');
     return;
   }
   
-  const trackingNumber = trackingInput.value.trim();
+  const trackingNumber = trackingInput.value.trim().toUpperCase();
   const bookingDate = dateInput.value;
   const fromAddress = addressInput.value.trim();
-
-  if (!trackingNumber) { 
-    showToast("Tracking number required", 'error'); 
-    return; 
-  }
 
   // Show loading state
   submitBtn.disabled = true;
   submitBtn.innerHTML = '<span class="loading-spinner"></span><span>Adding Parcel...</span>';
   
   statusDiv.className = 'status-container status-loading';
-  statusDiv.innerHTML = '<div class="loading-spinner"></div><div>Submitting parcel data...</div>';
+  statusDiv.innerHTML = `
+    <div style="display: flex; align-items: center; justify-content: center; gap: 12px;">
+      <div class="loading-spinner"></div>
+      <div>Submitting parcel data...</div>
+    </div>
+  `;
   statusDiv.style.display = 'block';
 
-  // Using the original fetch with 'no-cors' that should work
   fetch(API_URL, {
     method: "POST",
     body: JSON.stringify({ 
@@ -1080,46 +723,43 @@ function submitParcel() {
       bookingDate, 
       fromAddress 
     }),
-    mode: 'no-cors'  // This is required for Google Apps Script
+    mode: 'no-cors'
   })
   .then(() => {
-    // Show success message
-    showToast("Parcel submitted! Check your Google Sheet.", 'success');
+    showToast("✅ Parcel added successfully!", 'success');
     statusDiv.className = 'status-container status-success';
     statusDiv.innerHTML = `
-      <div style="display: flex; align-items: center; gap: 10px;">
-        <span style="font-size: 24px;">✅</span>
+      <div style="display: flex; align-items: center; gap: 15px;">
+        <span style="font-size: 32px;">🎉</span>
         <div>
-          <strong>Parcel Submitted Successfully!</strong>
-          <div style="margin-top: 5px; font-size: 14px;">
-            Tracking: ${trackingNumber}<br>
-            Date: ${bookingDate}<br>
-            From: ${fromAddress}
+          <strong style="font-size: 16px;">Parcel Added Successfully!</strong>
+          <div style="margin-top: 8px; font-size: 13px; opacity: 0.9;">
+            <div>📦 Tracking: ${trackingNumber}</div>
+            <div>📅 Date: ${bookingDate}</div>
+            <div>📍 From: ${fromAddress.substring(0, 50)}${fromAddress.length > 50 ? '...' : ''}</div>
           </div>
         </div>
       </div>
     `;
     
-    // Clear form fields
-    trackingInput.value = "";
-    dateInput.value = "";
-    addressInput.value = "";
-    
-    // Reset validation states
-    [trackingInput, dateInput, addressInput].forEach(input => {
-      input.classList.remove('error', 'success');
-    });
+    // Clear form for next entry
+    setTimeout(() => {
+      clearForm();
+      setTimeout(() => {
+        statusDiv.style.display = 'none';
+      }, 3000);
+    }, 2000);
   })
   .catch(err => {
     console.error(err);
-    showToast("Error submitting parcel. Please try again.", 'error');
+    showToast("❌ Error submitting parcel. Please try again.", 'error');
     statusDiv.className = 'status-container status-error';
     statusDiv.innerHTML = `
-      <div style="display: flex; align-items: center; gap: 10px;">
-        <span style="font-size: 24px;">❌</span>
+      <div style="display: flex; align-items: center; gap: 12px;">
+        <span style="font-size: 24px;">⚠️</span>
         <div>
           <strong>Submission Error</strong>
-          <div style="margin-top: 5px; font-size: 14px;">
+          <div style="margin-top: 5px; font-size: 13px;">
             Please check your connection and try again.
           </div>
         </div>
@@ -1127,7 +767,6 @@ function submitParcel() {
     `;
   })
   .finally(() => {
-    // Reset button state
     submitBtn.disabled = false;
     submitBtn.innerHTML = '<span>📦</span><span>Add Parcel</span>';
   });
@@ -1145,14 +784,9 @@ document.addEventListener('keydown', (e) => {
   if (e.key === 'Escape') {
     clearForm();
   }
-  
-  // Enter key on sidebar header to go to dashboard
-  if (e.key === 'Enter' && e.target.classList.contains('sidebar-header')) {
-    goToDashboard();
-  }
 });
 
-// Auto-advance on Enter key in inputs
+// Auto-advance on Enter key
 [trackingInput, dateInput, addressInput].forEach((input, index) => {
   input.addEventListener('keydown', (e) => {
     if (e.key === 'Enter') {
@@ -1180,6 +814,48 @@ addressInput.addEventListener('input', validateForm);
 // Focus on first input when page loads
 window.addEventListener('load', () => {
   trackingInput.focus();
+  
+  // Add welcome toast
+  setTimeout(() => {
+    showToast('Ready to add parcels! ✨', 'info');
+  }, 500);
+});
+
+// Auto-save to localStorage (optional)
+function autoSave() {
+  const formData = {
+    trackingNumber: trackingInput.value,
+    fromAddress: addressInput.value,
+    timestamp: new Date().toISOString()
+  };
+  localStorage.setItem('parcelEntryDraft', JSON.stringify(formData));
+}
+
+// Auto-save every 30 seconds
+setInterval(autoSave, 30000);
+
+// Load draft if exists
+window.addEventListener('load', () => {
+  const savedDraft = localStorage.getItem('parcelEntryDraft');
+  if (savedDraft) {
+    const draft = JSON.parse(savedDraft);
+    const savedTime = new Date(draft.timestamp);
+    const now = new Date();
+    const hoursDiff = (now - savedTime) / 1000 / 60 / 60;
+    
+    if (hoursDiff < 24 && draft.trackingNumber) {
+      if (confirm('You have a saved draft from earlier. Do you want to restore it?')) {
+        trackingInput.value = draft.trackingNumber;
+        addressInput.value = draft.fromAddress;
+        validateForm();
+        showToast('Draft restored', 'info');
+      } else {
+        localStorage.removeItem('parcelEntryDraft');
+      }
+    } else {
+      localStorage.removeItem('parcelEntryDraft');
+    }
+  }
 });
 </script>
 
