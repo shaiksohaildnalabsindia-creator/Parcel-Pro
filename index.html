@@ -305,49 +305,11 @@ body {
     100% { transform: rotate(360deg); }
 }
 
+/* Hide main content initially for loading */
 #main-content {
     transition: opacity 0.3s ease;
     opacity: 1;
     min-height: 400px;
-}
-
-#main-content.loading {
-    opacity: 0.5;
-}
-
-.error-container {
-    text-align: center;
-    padding: 50px;
-    background: white;
-    border-radius: 20px;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-    max-width: 500px;
-    margin: 50px auto;
-}
-
-.error-container h2 {
-    color: #ef4444;
-    margin-bottom: 15px;
-}
-
-.error-container p {
-    color: #6b7280;
-    margin-bottom: 20px;
-}
-
-.error-container button {
-    padding: 10px 20px;
-    background: #3b82f6;
-    color: white;
-    border: none;
-    border-radius: 10px;
-    cursor: pointer;
-    font-size: 14px;
-    transition: background 0.3s;
-}
-
-.error-container button:hover {
-    background: #2563eb;
 }
 
 @media (max-width: 768px) {
@@ -414,31 +376,31 @@ body {
             ☰
         </button>
         <div class="nav-dropdown">
-            <a data-page="/Parcel-Pro/Dashboard/parcel_entry.html">
+            <a href="/Parcel-Pro/Dashboard/parcel_entry.html">
                 <span>📦</span>
                 <span>Parcel Entry</span>
             </a>
-            <a data-page="/Parcel-Pro/Dashboard/parcel_entry_form.html">
+            <a href="/Parcel-Pro/Dashboard/parcel_entry_form.html">
                 <span>🔍</span>
                 <span>Parcel Scanner</span>
             </a>
-            <a data-page="/Parcel-Pro/Dashboard/upload_sample_images.html">
+            <a href="/Parcel-Pro/Dashboard/upload_sample_images.html">
                 <span>📷</span>
                 <span>Upload Images</span>
             </a>
-            <a data-page="/Parcel-Pro/Dashboard/delivered_today.html">
+            <a href="/Parcel-Pro/Dashboard/delivered_today.html">
                 <span>📅</span>
                 <span>Delivered Today</span>
             </a>
-            <a data-page="/Parcel-Pro/Dashboard/total.html">
+            <a href="/Parcel-Pro/Dashboard/total.html">
                 <span>📊</span>
                 <span>Total Samples</span>
             </a>
-            <a data-page="/Parcel-Pro/Dashboard/gallery.html">
+            <a href="/Parcel-Pro/Dashboard/gallery.html">
                 <span>🖼️</span>
                 <span>Sample Gallery</span>
             </a>
-            <a data-page="/Parcel-Pro/Dashboard/Record.html">
+            <a href="/Parcel-Pro/Dashboard/Record.html">
                 <span>📋</span>
                 <span>Patients Record</span>
             </a>
@@ -448,47 +410,47 @@ body {
     <main id="main-content">
         <div class="dashboard">
             <div class="grid">
-                <div class="box" data-page="/Parcel-Pro/Dashboard/parcel_entry.html" tabindex="0" role="button">
+                <a href="/Parcel-Pro/Dashboard/parcel_entry.html" class="box" tabindex="0" style="text-decoration: none;">
                     <div class="box-icon">📦📝</div>
                     <div class="box-text">Parcel Entry</div>
                     <div class="box-description">Create new parcel entries with detailed information</div>
-                </div>
+                </a>
 
-                <div class="box" data-page="/Parcel-Pro/Dashboard/parcel_entry_form.html" tabindex="0" role="button">
+                <a href="/Parcel-Pro/Dashboard/parcel_entry_form.html" class="box" tabindex="0" style="text-decoration: none;">
                     <div class="box-icon">📦🔍</div>
                     <div class="box-text">Parcel Scanner</div>
                     <div class="box-description">Scan and manage received parcels</div>
-                </div>
+                </a>
 
-                <div class="box" data-page="/Parcel-Pro/Dashboard/upload_sample_images.html" tabindex="0" role="button">
+                <a href="/Parcel-Pro/Dashboard/upload_sample_images.html" class="box" tabindex="0" style="text-decoration: none;">
                     <div class="box-icon">📷</div>
                     <div class="box-text">Upload Sample Images</div>
                     <div class="box-description">Upload and manage parcel images</div>
-                </div>
+                </a>
 
-                <div class="box" data-page="/Parcel-Pro/Dashboard/delivered_today.html" tabindex="0" role="button">
+                <a href="/Parcel-Pro/Dashboard/delivered_today.html" class="box" tabindex="0" style="text-decoration: none;">
                     <div class="box-icon">📅</div>
                     <div class="box-text">Delivered Today</div>
                     <div class="box-description">View today's delivered parcels</div>
-                </div>
+                </a>
 
-                <div class="box" data-page="/Parcel-Pro/Dashboard/gallery.html" tabindex="0" role="button">
+                <a href="/Parcel-Pro/Dashboard/gallery.html" class="box" tabindex="0" style="text-decoration: none;">
                     <div class="box-icon">🖼️</div>
                     <div class="box-text">Sample Gallery</div>
                     <div class="box-description">Browse all parcel images gallery</div>
-                </div>
+                </a>
 
-                <div class="box" data-page="/Parcel-Pro/Dashboard/total.html" tabindex="0" role="button">
+                <a href="/Parcel-Pro/Dashboard/total.html" class="box" tabindex="0" style="text-decoration: none;">
                     <div class="box-icon">📊</div>
                     <div class="box-text">Total Samples</div>
                     <div class="box-description">View complete parcel statistics</div>
-                </div>
+                </a>
                 
-                <div class="box" data-page="/Parcel-Pro/Dashboard/Record.html" tabindex="0" role="button">
+                <a href="/Parcel-Pro/Dashboard/Record.html" class="box" tabindex="0" style="text-decoration: none;">
                     <div class="box-icon">📋</div>
                     <div class="box-text">Patients Record</div>
                     <div class="box-description">View complete Patient Details</div>
-                </div>
+                </a>
             </div>
         </div>
     </main>
@@ -520,6 +482,7 @@ body {
     const app = firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
 
+    // Redirect if not logged in
     auth.onAuthStateChanged(user => {
         if(!user && !window.location.pathname.includes('login.html')){
             window.location.href = "login.html";
@@ -531,165 +494,6 @@ body {
             window.location.href = "login.html";
         });
     }
-</script>
-
-<script>
-    // SPA Navigation System - Direct page loading without fallbacks
-    (function() {
-        const contentContainer = document.getElementById('main-content');
-        const loadingOverlay = document.getElementById('loadingOverlay');
-        let currentPage = window.location.pathname;
-        let isNavigating = false;
-
-        async function loadPage(url) {
-            if (isNavigating) return;
-            if (url === currentPage) return;
-            
-            console.log('Loading page:', url);
-            isNavigating = true;
-            
-            if (loadingOverlay) loadingOverlay.classList.add('active');
-            if (contentContainer) contentContainer.classList.add('loading');
-            
-            try {
-                const response = await fetch(url);
-                
-                if (!response.ok) {
-                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-                }
-                
-                const html = await response.text();
-                const parser = new DOMParser();
-                const doc = parser.parseFromString(html, 'text/html');
-                
-                // Extract the main content area
-                let newContent = doc.querySelector('#main-content, main, .container, .content');
-                
-                if (!newContent) {
-                    newContent = doc.body;
-                }
-                
-                if (contentContainer) {
-                    contentContainer.innerHTML = newContent.innerHTML;
-                }
-                
-                // Update title
-                document.title = doc.title;
-                
-                // Update URL
-                window.history.pushState({ url: url }, '', url);
-                currentPage = url;
-                
-                // Re-attach event listeners to new content
-                attachEventListeners();
-                
-                // Execute scripts from the loaded page
-                const scripts = doc.querySelectorAll('script');
-                scripts.forEach(oldScript => {
-                    if (!oldScript.src || !oldScript.src.includes('firebase')) {
-                        const newScript = document.createElement('script');
-                        if (oldScript.src) {
-                            newScript.src = oldScript.src;
-                        } else {
-                            newScript.textContent = oldScript.textContent;
-                        }
-                        document.body.appendChild(newScript);
-                        document.body.removeChild(newScript);
-                    }
-                });
-                
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-                
-            } catch (error) {
-                console.error('Error loading page:', error);
-                if (contentContainer) {
-                    contentContainer.innerHTML = `
-                        <div class="error-container">
-                            <h2>⚠️ Error Loading Page</h2>
-                            <p>Failed to load: ${url}</p>
-                            <p style="font-size: 12px; color: #666;">${error.message}</p>
-                            <button onclick="location.reload()">Refresh Page</button>
-                        </div>
-                    `;
-                }
-            } finally {
-                setTimeout(() => {
-                    if (loadingOverlay) loadingOverlay.classList.remove('active');
-                    if (contentContainer) contentContainer.classList.remove('loading');
-                    isNavigating = false;
-                }, 300);
-            }
-        }
-        
-        function attachEventListeners() {
-            // Attach to all elements with data-page attribute
-            const pageLinks = document.querySelectorAll('[data-page]');
-            pageLinks.forEach(element => {
-                element.removeEventListener('click', handleNavigation);
-                element.addEventListener('click', handleNavigation);
-                
-                if (element.classList.contains('box')) {
-                    element.setAttribute('tabindex', '0');
-                    element.removeEventListener('keydown', handleKeyboard);
-                    element.addEventListener('keydown', handleKeyboard);
-                }
-            });
-            
-            // Also handle any regular links pointing to internal pages
-            const internalLinks = document.querySelectorAll('a[href*="/Parcel-Pro/"]');
-            internalLinks.forEach(link => {
-                if (!link.hasAttribute('data-page') && !link.getAttribute('onclick')) {
-                    link.setAttribute('data-page', link.getAttribute('href'));
-                    link.removeEventListener('click', handleNavigation);
-                    link.addEventListener('click', handleNavigation);
-                }
-            });
-        }
-        
-        function handleNavigation(e) {
-            e.preventDefault();
-            e.stopPropagation();
-            const pageUrl = this.getAttribute('data-page');
-            if (pageUrl) {
-                if (this.classList.contains('box')) {
-                    this.classList.add('loading');
-                    setTimeout(() => {
-                        if (this.classList.contains('loading')) {
-                            this.classList.remove('loading');
-                        }
-                    }, 500);
-                }
-                loadPage(pageUrl);
-            }
-        }
-        
-        function handleKeyboard(e) {
-            if (e.key === 'Enter' || e.key === ' ') {
-                e.preventDefault();
-                this.click();
-            }
-        }
-        
-        // Handle browser back/forward
-        window.addEventListener('popstate', (event) => {
-            if (event.state && event.state.url) {
-                loadPage(event.state.url);
-            } else {
-                loadPage(window.location.pathname);
-            }
-        });
-        
-        function init() {
-            attachEventListeners();
-            console.log('SPA Navigation initialized');
-        }
-        
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', init);
-        } else {
-            init();
-        }
-    })();
 
     function showAbout() {
         event?.preventDefault();
@@ -698,8 +502,56 @@ body {
 
     function showHelp() {
         event?.preventDefault();
-        alert('Need help? Please contact our support team:\n\n📧 Email: support@parcelpro.com\n📞 Phone: +1 (555) 123-4567\n🕐 Hours: Mon-Fri, 9AM-6PM');
+        alert('Need help? Please contact our support team:\n\n📧 Email: support@parcelpro.com\n📞 Phone: +1 (555) 123-4567\n🕐 Hours: Mon-Fri, 9AM-6PM\n\nFor technical support, please include your tracking number and error details.');
     }
+
+    // Add loading animation when clicking on any link
+    document.querySelectorAll('a').forEach(link => {
+        link.addEventListener('click', function(e) {
+            const href = this.getAttribute('href');
+            if (href && !href.startsWith('#') && !href.startsWith('mailto:') && !href.includes('javascript:')) {
+                const overlay = document.getElementById('loadingOverlay');
+                if (overlay) {
+                    overlay.classList.add('active');
+                }
+            }
+        });
+    });
+
+    // Remove loading overlay when page fully loads
+    window.addEventListener('load', function() {
+        const overlay = document.getElementById('loadingOverlay');
+        if (overlay) {
+            setTimeout(() => {
+                overlay.classList.remove('active');
+            }, 300);
+        }
+    });
 </script>
+
+<style>
+    /* Style for anchor tags that are boxes */
+    a.box {
+        text-decoration: none;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        color: inherit;
+    }
+    
+    a.box:hover {
+        text-decoration: none;
+    }
+    
+    /* Hide loading overlay initially */
+    .loading-overlay {
+        pointer-events: none;
+    }
+    
+    .loading-overlay.active {
+        pointer-events: all;
+    }
+</style>
 </body>
 </html>
