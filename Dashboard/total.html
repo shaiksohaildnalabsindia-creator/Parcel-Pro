@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>All Parcels</title>
+  <title>All Parcels - Optimized</title>
   <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
   <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
@@ -389,6 +389,7 @@
       display: flex;
       align-items: center;
       gap: 8px;
+      flex-wrap: wrap;
     }
 
     .page-subtitle {
@@ -748,26 +749,33 @@
       margin-bottom: 20px;
     }
 
-    /* Loading state */
-    .loading-container {
-      padding: 40px;
-      text-align: center;
-      color: #6b7280;
+    /* Loading state - skeleton */
+    .skeleton-loader {
+      padding: 20px;
     }
-
-    .loading-spinner {
-      display: inline-block;
-      width: 40px;
-      height: 40px;
-      border: 3px solid #e5e7eb;
-      border-radius: 50%;
-      border-top-color: #3b82f6;
-      animation: spin 1s linear infinite;
-      margin-bottom: 15px;
+    
+    .skeleton-row {
+      display: flex;
+      margin-bottom: 12px;
+      gap: 10px;
     }
-
-    @keyframes spin {
-      to { transform: rotate(360deg); }
+    
+    .skeleton-cell {
+      height: 24px;
+      background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+      background-size: 200% 100%;
+      animation: loading 1.5s infinite;
+      border-radius: 4px;
+      flex: 1;
+    }
+    
+    .skeleton-cell:first-child {
+      max-width: 50px;
+    }
+    
+    @keyframes loading {
+      0% { background-position: -200px 0; }
+      100% { background-position: calc(200px + 100%) 0; }
     }
 
     /* Cache indicator */
@@ -898,11 +906,6 @@
     }
 
     /* Loading placeholder animation */
-    @keyframes loading {
-      0% { background-position: -200px 0; }
-      100% { background-position: calc(200px + 100%) 0; }
-    }
-
     .loading-placeholder {
       position: absolute;
       width: 100%;
@@ -1246,8 +1249,9 @@
         <span>📊</span>
         <span>All Parcels</span>
         <span id="cacheIndicator" class="cache-indicator" style="display: none;">Cached</span>
+        <span id="loadTime" class="cache-indicator" style="display: none;">0s</span>
       </div>
-      <div class="page-subtitle">View and search all parcels in the system</div>
+      <div class="page-subtitle">Fast loading with skeleton & image caching</div>
     </div>
     <div class="user-menu">
       <div class="user-avatar">U</div>
@@ -1260,7 +1264,7 @@
       <div class="header">
         <div class="header-content">
           <h2>📊 All Parcels</h2>
-          <p>View all parcels with search, filter, and image viewing capabilities</p>
+          <p>View all parcels with optimized search and image loading</p>
         </div>
         <div class="stats-card">
           <span class="stats-count" id="count">0</span>
@@ -1272,7 +1276,7 @@
         <div class="controls">
           <div class="search-box">
             <label for="searchInput">Search Parcels</label>
-            <input type="text" id="searchInput" placeholder="Search by tracking number, city, status..." oninput="filterTable()">
+            <input type="text" id="searchInput" placeholder="Search by tracking number, city, status..." oninput="debounceSearch()">
           </div>
           
           <div class="filter-box">
@@ -1294,9 +1298,9 @@
       </div>
 
       <div class="table-container">
-         <table>
+          <table id="parcelsTable">
           <thead>
-             <tr>
+              <tr>
               <th class="sno">SNO</th>
               <th>Tracking Number</th>
               <th>Booking Date</th>
@@ -1304,19 +1308,23 @@
               <th>Delivery Date</th>
               <th>Status</th>
               <th>Images</th>
-             </tr>
+              </tr>
           </thead>
           <tbody id="tableBody">
-             <tr>
+              <!-- Skeleton rows will be displayed here -->
+              <tr>
               <td colspan="7">
-                <div class="loading-container">
-                  <div class="loading-spinner"></div>
-                  <div>Loading parcels data...</div>
+                <div class="skeleton-loader">
+                  <div class="skeleton-row"><div class="skeleton-cell"></div><div class="skeleton-cell"></div><div class="skeleton-cell"></div><div class="skeleton-cell"></div><div class="skeleton-cell"></div><div class="skeleton-cell"></div><div class="skeleton-cell"></div></div>
+                  <div class="skeleton-row"><div class="skeleton-cell"></div><div class="skeleton-cell"></div><div class="skeleton-cell"></div><div class="skeleton-cell"></div><div class="skeleton-cell"></div><div class="skeleton-cell"></div><div class="skeleton-cell"></div></div>
+                  <div class="skeleton-row"><div class="skeleton-cell"></div><div class="skeleton-cell"></div><div class="skeleton-cell"></div><div class="skeleton-cell"></div><div class="skeleton-cell"></div><div class="skeleton-cell"></div><div class="skeleton-cell"></div></div>
+                  <div class="skeleton-row"><div class="skeleton-cell"></div><div class="skeleton-cell"></div><div class="skeleton-cell"></div><div class="skeleton-cell"></div><div class="skeleton-cell"></div><div class="skeleton-cell"></div><div class="skeleton-cell"></div></div>
+                  <div class="skeleton-row"><div class="skeleton-cell"></div><div class="skeleton-cell"></div><div class="skeleton-cell"></div><div class="skeleton-cell"></div><div class="skeleton-cell"></div><div class="skeleton-cell"></div><div class="skeleton-cell"></div></div>
                 </div>
-               </td>
-             </tr>
+              </td>
+              </tr>
           </tbody>
-         </table>
+          </table>
       </div>
     </div>
   </div>
@@ -1355,46 +1363,33 @@ function toggleCollapse() {
   sidebar.classList.toggle('collapsed');
   mainContent.classList.toggle('sidebar-collapsed');
   
-  // Save state to localStorage
   const isCollapsed = sidebar.classList.contains('collapsed');
   localStorage.setItem('sidebarCollapsed', isCollapsed);
-  
-  // Update tooltips for all menu items
   updateMenuTooltips();
 }
 
 function updateMenuTooltips() {
   const sidebar = document.getElementById('sidebar');
   const isCollapsed = sidebar.classList.contains('collapsed');
-  
-  if (isCollapsed) {
-    // Add tooltips if collapsed
-    document.querySelectorAll('.menu-item').forEach(item => {
+  document.querySelectorAll('.menu-item').forEach(item => {
+    if (isCollapsed) {
       const text = item.querySelector('.menu-item-text').textContent;
       item.setAttribute('data-tooltip', text);
-    });
-  } else {
-    // Remove tooltips if expanded
-    document.querySelectorAll('.menu-item').forEach(item => {
+    } else {
       item.removeAttribute('data-tooltip');
-    });
-  }
+    }
+  });
 }
 
 // Initialize sidebar state on page load
 window.addEventListener('load', () => {
   const sidebar = document.getElementById('sidebar');
   const mainContent = document.getElementById('mainContent');
-  
-  // Check if sidebar was collapsed previously
   const wasCollapsed = localStorage.getItem('sidebarCollapsed') === 'true';
-  
   if (wasCollapsed) {
     sidebar.classList.add('collapsed');
     mainContent.classList.add('sidebar-collapsed');
   }
-  
-  // Update tooltips based on initial state
   updateMenuTooltips();
 });
 
@@ -1431,7 +1426,7 @@ window.addEventListener('resize', () => {
 
 /* ---------- CACHE SETTINGS ---------- */
 const CACHE_KEY = 'parcel_pro_all_parcels';
-const CACHE_DURATION = 10 * 60 * 1000; // 10 minutes cache
+const CACHE_DURATION = 10 * 60 * 1000; // 10 minutes
 const webAppUrlAll = "https://script.google.com/macros/s/AKfycbxV2_zUbYNt3j_FPtRtauZ1wZaXFqc2fDik3PWK18Asoki_cGYH2HEdKgPhUNaNGLyJGQ/exec";
 const IMAGE_API = "https://script.google.com/macros/s/AKfycbwZw152zyjIA1gU5Ssn4YRl8kTXrdaDlMB8XzZWHc6Hb4WNI7C6D5W4xH-sRI0lE_ZNTA/exec";
 
@@ -1447,6 +1442,7 @@ const tableBody = document.getElementById("tableBody");
 const countElement = document.getElementById("count");
 const toast = document.getElementById('toast');
 const cacheIndicator = document.getElementById('cacheIndicator');
+const loadTimeSpan = document.getElementById('loadTime');
 
 /* ---------- ZOOM AND PAN VARIABLES ---------- */
 let scale = 1;
@@ -1455,7 +1451,6 @@ let isDragging = false;
 let startX = 0, startY = 0;
 
 /* ---------- GLOBAL VARIABLES ---------- */
-let refreshInterval;
 let allData = [];
 let reversedData = [];
 let currentImages = [];
@@ -1463,41 +1458,31 @@ let currentIndex = 0;
 let isLoading = false;
 let memoryCache = null;
 let isFromCache = false;
+let searchTimeout = null;
+let loadStartTime = 0;
 
 /* ---------- CACHE FUNCTIONS ---------- */
 function saveToCache(data) {
-  const cacheData = {
-    data: data,
-    timestamp: Date.now()
-  };
+  const cacheData = { data, timestamp: Date.now() };
   localStorage.setItem(CACHE_KEY, JSON.stringify(cacheData));
   memoryCache = cacheData;
 }
 
 function getFromCache() {
-  // Check memory cache first
   if (memoryCache && memoryCache.timestamp) {
     const isExpired = (Date.now() - memoryCache.timestamp) > CACHE_DURATION;
-    if (!isExpired) {
-      return memoryCache.data;
-    }
+    if (!isExpired) return memoryCache.data;
     memoryCache = null;
   }
-  
-  // Fall back to localStorage
   const cached = localStorage.getItem(CACHE_KEY);
   if (!cached) return null;
-  
   try {
     const parsed = JSON.parse(cached);
     const isExpired = (Date.now() - parsed.timestamp) > CACHE_DURATION;
-    
     if (isExpired) {
       localStorage.removeItem(CACHE_KEY);
       return null;
     }
-    
-    // Update memory cache
     memoryCache = parsed;
     return parsed.data;
   } catch (e) {
@@ -1527,54 +1512,57 @@ function updateCacheIndicator(isCached) {
 
 /* ---------- TOAST FUNCTION ---------- */
 function showToast(message, type = 'success') {
-  toast.textContent = message;
+  toast.innerHTML = `<span class="toast-icon">${type === 'success' ? '✅' : type === 'error' ? '❌' : 'ℹ️'}</span><span>${message}</span>`;
   toast.className = `toast toast-${type}`;
-  toast.innerHTML = `
-    <span class="toast-icon">${type === 'success' ? '✅' : type === 'error' ? '❌' : 'ℹ️'}</span>
-    <span>${message}</span>
-  `;
   toast.classList.add('show');
-  
-  setTimeout(() => {
-    toast.classList.remove('show');
-  }, 3000);
+  setTimeout(() => toast.classList.remove('show'), 3000);
 }
 
 /* ---------- UTILITY FUNCTIONS ---------- */
 function formatDate(dateString) {
   if (!dateString) return '';
-  
   try {
     const datePart = dateString.split(' ')[0];
     const date = new Date(datePart);
-    
-    if (isNaN(date.getTime())) {
-      return dateString;
-    }
-    
+    if (isNaN(date.getTime())) return dateString;
     const month = (date.getMonth() + 1).toString().padStart(2, '0');
     const day = date.getDate().toString().padStart(2, '0');
     const year = date.getFullYear();
-    
     return `${month}/${day}/${year}`;
-  } catch (error) {
-    console.error('Error formatting date:', dateString, error);
-    return dateString;
-  }
+  } catch { return dateString; }
 }
 
 function getStatusClass(status) {
   if (!status) return 'status-pending';
-  const statusLower = status.toLowerCase();
-  if (statusLower.includes('delivered')) return 'status-delivered';
-  if (statusLower.includes('cancelled')) return 'status-cancelled';
-  if (statusLower.includes('in-transit') || statusLower.includes('in transit')) return 'status-in-transit';
-  if (statusLower.includes('not picked')) return 'status-not-picked';
+  const s = status.toLowerCase();
+  if (s.includes('delivered')) return 'status-delivered';
+  if (s.includes('cancelled')) return 'status-cancelled';
+  if (s.includes('in-transit') || s.includes('in transit')) return 'status-in-transit';
+  if (s.includes('not picked')) return 'status-not-picked';
   return 'status-pending';
 }
 
-/* ---------- DATA LOADING (Hybrid: fetch with JSONP fallback) ---------- */
-// Define JSONP callback globally
+/* ---------- SKELETON LOADER ---------- */
+function showSkeleton() {
+  tableBody.innerHTML = `
+    <tr><td colspan="7">
+      <div class="skeleton-loader">
+        ${Array(5).fill().map(() => `
+          <div class="skeleton-row">
+            <div class="skeleton-cell"></div><div class="skeleton-cell"></div>
+            <div class="skeleton-cell"></div><div class="skeleton-cell"></div>
+            <div class="skeleton-cell"></div><div class="skeleton-cell"></div>
+            <div class="skeleton-cell"></div>
+          </div>
+        `).join('')}
+      </div>
+    </td></tr>
+  `;
+  countElement.textContent = "0";
+}
+
+/* ---------- DATA LOADING ---------- */
+// JSONP callback
 window.handleData = function(data) {
   console.log("JSONP callback received data");
   processApiData(data);
@@ -1582,7 +1570,6 @@ window.handleData = function(data) {
 
 function processApiData(data) {
   isLoading = false;
-  // Ensure data is array
   if (!Array.isArray(data)) {
     console.error("Invalid data format", data);
     showError("Invalid data format received");
@@ -1591,29 +1578,29 @@ function processApiData(data) {
   allData = data;
   reversedData = [...allData].reverse();
   saveToCache(allData);
-  filterTable();
+  filterTable(); // this will update UI and count
+  const loadTime = ((performance.now() - loadStartTime) / 1000).toFixed(2);
+  loadTimeSpan.style.display = 'inline-block';
+  loadTimeSpan.textContent = `${loadTime}s`;
   if (isFromCache) {
     showToast(`Refreshed ${allData.length} parcels`, 'success');
   } else {
-    showToast(`Loaded ${allData.length} parcels`, 'success');
+    showToast(`Loaded ${allData.length} parcels in ${loadTime}s`, 'success');
   }
   updateCacheIndicator(false);
 }
 
 function showError(msg) {
   tableBody.innerHTML = `
-     <tr>
-      <td colspan="7">
-        <div class="empty-state">
-          <div class="empty-icon">⚠️</div>
-          <div>${msg}. Please try again.</div>
-          <button onclick="forceRefresh()" class="refresh-btn" style="margin-top: 15px;">
-            <span>🔄</span>
-            <span>Retry</span>
-          </button>
-        </div>
-       </td>
-     </tr>
+    <tr><td colspan="7">
+      <div class="empty-state">
+        <div class="empty-icon">⚠️</div>
+        <div>${msg}. Please try again.</div>
+        <button onclick="forceRefresh()" class="refresh-btn" style="margin-top: 15px;">
+          <span>🔄</span><span>Retry</span>
+        </button>
+      </div>
+    </td></tr>
   `;
   showToast(msg, 'error');
 }
@@ -1621,7 +1608,6 @@ function showError(msg) {
 async function loadData(forceRefresh = false) {
   if (isLoading && !forceRefresh) return;
   
-  // Check cache first (unless forcing refresh)
   if (!forceRefresh) {
     const cachedData = getFromCache();
     if (cachedData) {
@@ -1631,33 +1617,19 @@ async function loadData(forceRefresh = false) {
       filterTable();
       updateCacheIndicator(true);
       showToast(`Loaded ${allData.length} parcels from cache`, 'info');
-      
-      // Refresh data in background if cache is older than 2 minutes
+      // Refresh in background if cache is old
       const cacheAge = Date.now() - (memoryCache?.timestamp || 0);
-      if (cacheAge > 120000) {
-        setTimeout(() => loadData(true), 1000);
-      }
+      if (cacheAge > 120000) setTimeout(() => loadData(true), 1000);
       return;
     }
   }
   
   isLoading = true;
   updateCacheIndicator(false);
+  showSkeleton();
+  loadStartTime = performance.now();
   
-  // Show loading state
-  tableBody.innerHTML = `
-     <tr>
-      <td colspan="7">
-        <div class="loading-container">
-          <div class="loading-spinner"></div>
-          <div>${forceRefresh ? 'Refreshing parcels...' : 'Loading parcels data...'}</div>
-        </div>
-       </td>
-     </tr>
-  `;
-  countElement.textContent = "0";
-  
-  // Try fetch first (if CORS is enabled)
+  // Try fetch first
   try {
     const url = webAppUrlAll + '?t=' + Date.now();
     const response = await fetch(url);
@@ -1670,23 +1642,19 @@ async function loadData(forceRefresh = false) {
           return;
         }
       }
-      // If not JSON or not array, maybe it's JSONP response, so fallback to JSONP
     }
-    // If fetch fails or doesn't return array, fall back to JSONP
-    throw new Error('Fetch did not return valid array, falling back to JSONP');
+    // Fallback to JSONP
+    throw new Error('Fetch failed or invalid format');
   } catch (fetchError) {
     console.warn("Fetch failed, using JSONP fallback", fetchError);
-    // Fallback to JSONP
     const scriptId = "jsonpScript";
     const oldScript = document.getElementById(scriptId);
     if (oldScript) oldScript.remove();
-    
     const script = document.createElement("script");
     script.src = webAppUrlAll + "?callback=handleData&t=" + Date.now();
     script.id = scriptId;
     script.onerror = () => {
       isLoading = false;
-      // Try cache again as last resort
       const cachedData = getFromCache();
       if (cachedData) {
         allData = Array.isArray(cachedData) ? cachedData : [];
@@ -1702,23 +1670,20 @@ async function loadData(forceRefresh = false) {
   }
 }
 
-/* ---------- FILTER AND DISPLAY ---------- */
+/* ---------- DEBOUNCED SEARCH ---------- */
+function debounceSearch() {
+  clearTimeout(searchTimeout);
+  searchTimeout = setTimeout(() => filterTable(), 300);
+}
+
 function filterTable() {
-  const searchInput = document.getElementById("searchInput").value.toLowerCase();
+  const searchTerm = document.getElementById("searchInput").value.toLowerCase();
   const statusFilter = document.getElementById("statusFilter").value;
   
-  // Filter data based on search and status
   let filteredData = reversedData.filter(row => {
-    // Status filter - check first
-    const matchesStatus = statusFilter === '' || 
-      (row.status && row.status === statusFilter);
-    
+    const matchesStatus = statusFilter === '' || (row.status === statusFilter);
     if (!matchesStatus) return false;
-    
-    // Search filter - only check if search input is provided
-    if (searchInput === '') return true;
-    
-    // Check all searchable fields
+    if (searchTerm === '') return true;
     const searchFields = [
       row.trackingNumber || '',
       row.fromAddress || '',
@@ -1726,345 +1691,219 @@ function filterTable() {
       formatDate(row.bookingDate) || '',
       formatDate(row.deliveryDate) || ''
     ];
-    
-    // Check if any field contains the search term
-    return searchFields.some(field => 
-      field.toString().toLowerCase().includes(searchInput)
-    );
+    return searchFields.some(f => f.toString().toLowerCase().includes(searchTerm));
   });
   
-  // Update count
   countElement.textContent = filteredData.length;
-  
-  // Clear table
-  tableBody.innerHTML = '';
   
   if (filteredData.length === 0) {
     tableBody.innerHTML = `
-       <tr>
-        <td colspan="7">
-          <div class="empty-state">
-            <div class="empty-icon">🔍</div>
-            <div>No parcels found matching your search criteria.</div>
-            <div style="font-size: 13px; margin-top: 10px; opacity: 0.7;">
-              Try adjusting your search or filter
-            </div>
-          </div>
-         </td>
-       </tr>
+      <tr><td colspan="7">
+        <div class="empty-state">
+          <div class="empty-icon">🔍</div>
+          <div>No parcels found matching your criteria.</div>
+        </div>
+      </td></tr>
     `;
     return;
   }
   
   // Maintain chronological order (newest to oldest)
   filteredData = filteredData.sort((a, b) => {
-    const indexA = reversedData.findIndex(item => 
-      item.trackingNumber === a.trackingNumber && 
-      item.bookingDate === a.bookingDate
-    );
-    const indexB = reversedData.findIndex(item => 
-      item.trackingNumber === b.trackingNumber && 
-      item.bookingDate === b.bookingDate
-    );
+    const indexA = reversedData.findIndex(item => item.trackingNumber === a.trackingNumber && item.bookingDate === a.bookingDate);
+    const indexB = reversedData.findIndex(item => item.trackingNumber === b.trackingNumber && item.bookingDate === b.bookingDate);
     return indexA - indexB;
   });
   
-  // Display filtered data with reversed SNO
   const filteredCount = filteredData.length;
-  
-  filteredData.forEach((row, index) => {
-    const tr = document.createElement("tr");
-    
-    // Calculate reversed and reset SNO
-    const sno = filteredCount - index;
-    
-    tr.innerHTML = `
-      <td class="sno">${sno}</td>
-      <td>${row.trackingNumber || ''}</td>
-      <td>${formatDate(row.bookingDate)}</td>
-      <td>${row.fromAddress || ''}</td>
-      <td>${formatDate(row.deliveryDate)}</td>
-      <td>
-        <span class="status-badge ${getStatusClass(row.status)}">
-          ${row.status || 'Unknown'}
-        </span>
-      </td>
-      <td>
-        <a class="tracking-link" onclick="openModal('${row.trackingNumber}')" 
-           title="View images for ${row.trackingNumber}">
-          View Images
-        </a>
-      </td>
+  let html = '';
+  filteredData.forEach((row, idx) => {
+    const sno = filteredCount - idx;
+    html += `
+      <tr>
+        <td class="sno">${sno}</td>
+        <td>${row.trackingNumber || ''}</td>
+        <td>${formatDate(row.bookingDate)}</td>
+        <td>${row.fromAddress || ''}</td>
+        <td>${formatDate(row.deliveryDate)}</td>
+        <td><span class="status-badge ${getStatusClass(row.status)}">${row.status || 'Unknown'}</span></td>
+        <td><a class="tracking-link" onclick="openModal('${row.trackingNumber}')">View Images</a></td>
+      </tr>
     `;
-    tableBody.appendChild(tr);
   });
+  tableBody.innerHTML = html;
 }
 
-/* ---------- IMAGE CACHING (unchanged) ---------- */
+/* ---------- IMAGE FUNCTIONS (with caching) ---------- */
+const imageCache = new Map();
+
 function getImageCacheKey(tracking) {
-  return `parcel_pro_images_${tracking}`;
+  return `parcel_images_${tracking}`;
 }
 
 function saveImagesToCache(tracking, images) {
-  const cacheData = {
-    data: images,
-    timestamp: Date.now()
-  };
+  const cacheData = { data: images, timestamp: Date.now() };
   localStorage.setItem(getImageCacheKey(tracking), JSON.stringify(cacheData));
 }
 
 function getImagesFromCache(tracking) {
   const cached = localStorage.getItem(getImageCacheKey(tracking));
   if (!cached) return null;
-  
   try {
     const parsed = JSON.parse(cached);
     const isExpired = (Date.now() - parsed.timestamp) > CACHE_DURATION;
-    
     if (isExpired) {
       localStorage.removeItem(getImageCacheKey(tracking));
       return null;
     }
-    
     return parsed.data;
-  } catch (e) {
-    localStorage.removeItem(getImageCacheKey(tracking));
-    return null;
-  }
+  } catch { return null; }
 }
 
-function openModal(tracking) {
-  console.log("Opening modal for tracking:", tracking);
-  imageModal.classList.add("show");
-  
-  const cachedImages = getImagesFromCache(tracking);
-  if (cachedImages) {
-    renderImages(cachedImages, tracking, true);
-    return;
-  }
-  
-  gallery.innerHTML = `<div class="modal-loading">Loading images for ${tracking}...</div>`;
-  fetchImages(tracking.toLowerCase());
-}
-
-function closeModal() {
-  imageModal.classList.remove("show");
-  gallery.innerHTML = "";
-  currentImages = [];
-}
-
-function preloadImages(images) {
-  const promises = images.map((item, index) => {
-    return new Promise((resolve) => {
-      const img = new Image();
-      img.src = item.url;
-      img.onload = () => resolve({ index, item, status: 'loaded' });
-      img.onerror = () => resolve({ index, item, status: 'error' });
-    });
-  });
-  return Promise.all(promises);
-}
-
-async function fetchImages(query) {
-  try {
-    const response = await fetch(IMAGE_API + `?t=${Date.now()}`);
-    if (!response.ok) throw new Error(`HTTP ${response.status}`);
-    const data = await response.json();
-    saveImagesToCache(query, data);
-    renderImages(data, query, false);
-  } catch (error) {
-    console.error('Error fetching images:', error);
-    const cachedImages = getImagesFromCache(query);
-    if (cachedImages) {
-      renderImages(cachedImages, query, true);
-      showToast('Showing cached images', 'info');
+function preloadImage(url) {
+  return new Promise((resolve, reject) => {
+    if (imageCache.has(url)) {
+      resolve(imageCache.get(url));
       return;
     }
-    gallery.innerHTML = `
-      <div class="error-message">
-        <p>Failed to load images. Please try again.</p>
-        <button onclick="fetchImages('${query}')" class="refresh-btn" style="margin-top: 10px;">
-          <span>🔄</span>
-          <span>Retry</span>
-        </button>
-      </div>`;
+    const img = new Image();
+    img.onload = () => {
+      imageCache.set(url, img);
+      resolve(img);
+    };
+    img.onerror = reject;
+    img.src = url;
+  });
+}
+
+async function openModal(tracking) {
+  imageModal.classList.add("show");
+  gallery.innerHTML = `<div class="modal-loading">📸 Loading images for ${tracking}...</div>`;
+  
+  const cached = getImagesFromCache(tracking);
+  if (cached) {
+    renderImages(cached, tracking, true);
+    return;
+  }
+  
+  try {
+    const response = await fetch(IMAGE_API + `?t=${Date.now()}`);
+    const data = await response.json();
+    const allImages = Array.isArray(data) ? data : (data.data || data.images || []);
+    const matched = allImages.filter(img => img.caption && img.caption.toLowerCase().includes(tracking.toLowerCase()));
+    const imagesToShow = matched.length ? matched : [];
+    saveImagesToCache(tracking, imagesToShow);
+    renderImages(imagesToShow, tracking, false);
+  } catch (error) {
+    console.error('Image fetch error:', error);
+    gallery.innerHTML = `<div class="error-message">Failed to load images. <button onclick="openModal('${tracking}')">Retry</button></div>`;
   }
 }
 
-function renderImages(data, query, fromCache = false) {
-  gallery.innerHTML = "";
-  if (!Array.isArray(data)) {
-    gallery.innerHTML = `<div class="error-message">Invalid image data format.</div>`;
+function renderImages(images, tracking, fromCache = false) {
+  gallery.innerHTML = '';
+  if (!images.length) {
+    gallery.innerHTML = `<div class="error-message">No images found for ${tracking}</div>`;
     return;
   }
-  
-  currentImages = data.filter(item => 
-    item.caption && item.caption.toLowerCase().includes(query.toLowerCase())
-  );
-  
-  if (currentImages.length === 0) {
-    gallery.innerHTML = `
-      <div class="error-message">
-        No images found for tracking number: <strong>${query.toUpperCase()}</strong>
-      </div>`;
-    return;
-  }
-  
+  currentImages = images;
   if (fromCache) {
-    gallery.innerHTML = `<div class="modal-loading">Loading ${currentImages.length} cached image(s)...</div>`;
+    gallery.innerHTML = `<div class="modal-loading">Loading cached images...</div>`;
     setTimeout(() => {
-      gallery.innerHTML = "";
-      currentImages.forEach((item, index) => {
-        createImageElement(item, index, 'loaded');
-      });
-      showToast(`Loaded ${currentImages.length} images from cache`, 'info');
-    }, 300);
+      gallery.innerHTML = '';
+      currentImages.forEach((img, idx) => createImageElement(img, idx));
+      showToast(`Loaded ${images.length} cached images`, 'info');
+    }, 200);
   } else {
-    gallery.innerHTML = `<div class="modal-loading">Preloading ${currentImages.length} image(s)...</div>`;
-    preloadImages(currentImages).then((results) => {
-      gallery.innerHTML = "";
-      results.forEach((result, index) => {
-        createImageElement(result.item, index, result.status);
+    gallery.innerHTML = `<div class="modal-loading">Loading ${images.length} images...</div>`;
+    Promise.all(images.map(img => preloadImage(img.url).catch(() => null)))
+      .then(() => {
+        gallery.innerHTML = '';
+        images.forEach((img, idx) => createImageElement(img, idx));
       });
-      const loadedCount = results.filter(r => r.status === 'loaded').length;
-      if (loadedCount < currentImages.length) {
-        showToast(`${loadedCount} of ${currentImages.length} images loaded successfully`, 'info');
-      }
-    });
   }
 }
 
-function createImageElement(item, index, status = 'loaded') {
+function createImageElement(item, index) {
   const container = document.createElement("div");
   container.className = "img-container";
   container.style.cssText = "position: relative; min-width: 200px; min-height: 150px;";
-  
   const placeholder = document.createElement("div");
   placeholder.className = "loading-placeholder";
   container.appendChild(placeholder);
-  
   const img = document.createElement("img");
-  img.style.cssText = `
-    width: 100%;
-    height: 100%;
-    max-width: 400px;
-    max-height: 300px;
-    object-fit: contain;
-    cursor: pointer;
-    border-radius: 8px;
-    opacity: 0;
-    transition: opacity 0.3s ease;
-  `;
-  
+  img.style.cssText = "width:100%;height:100%;max-width:400px;max-height:300px;object-fit:contain;cursor:pointer;border-radius:8px;opacity:0;transition:opacity 0.3s";
   img.src = item.url;
-  img.alt = item.caption || `Image ${index + 1}`;
-  img.loading = "lazy";
-  
-  if (status === 'loaded') {
+  img.alt = item.caption || `Image ${index+1}`;
+  img.onload = () => {
     img.style.opacity = "1";
     placeholder.style.display = "none";
     if (item.caption) {
       const caption = document.createElement("div");
-      caption.style.cssText = "color: white; text-align: center; font-size: 13px; margin-top: 8px; word-break: break-word; max-width: 400px;";
-      caption.textContent = item.caption.length > 40 ? item.caption.substring(0, 40) + "..." : item.caption;
+      caption.style.cssText = "color:white;text-align:center;font-size:13px;margin-top:8px;max-width:400px";
+      caption.textContent = item.caption.length > 40 ? item.caption.substring(0,40)+"..." : item.caption;
       container.appendChild(caption);
     }
-  } else {
-    img.onload = () => {
-      img.style.opacity = "1";
-      placeholder.style.display = "none";
-      if (item.caption) {
-        const caption = document.createElement("div");
-        caption.style.cssText = "color: white; text-align: center; font-size: 13px; margin-top: 8px; word-break: break-word; max-width: 400px;";
-        caption.textContent = item.caption.length > 40 ? item.caption.substring(0, 40) + "..." : item.caption;
-        container.appendChild(caption);
-      }
-    };
-    img.onerror = () => {
-      placeholder.style.display = "none";
-      const errorDiv = document.createElement("div");
-      errorDiv.style.cssText = `
-        width: 100%;
-        height: 100%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        background: #fee;
-        border: 2px dashed #f87171;
-        border-radius: 8px;
-        color: #dc2626;
-        font-size: 12px;
-        padding: 10px;
-        text-align: center;
-      `;
-      errorDiv.textContent = "Failed to load image";
-      container.appendChild(errorDiv);
-    };
-  }
-  
-  img.onclick = (e) => { 
-    e.stopPropagation(); 
-    openFullscreen(index); 
   };
-  
+  img.onerror = () => {
+    placeholder.style.display = "none";
+    const errorDiv = document.createElement("div");
+    errorDiv.style.cssText = "width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:#fee;border:2px dashed #f87171;border-radius:8px;color:#dc2626;font-size:12px;padding:10px;text-align:center";
+    errorDiv.textContent = "Failed to load";
+    container.appendChild(errorDiv);
+  };
+  img.onclick = () => openFullscreen(index);
   container.appendChild(img);
   gallery.appendChild(container);
 }
 
-/* ---------- FULLSCREEN VIEW FUNCTIONS (unchanged) ---------- */
+function closeModal() { imageModal.classList.remove("show"); gallery.innerHTML = ""; currentImages = []; }
 function openFullscreen(index) {
   if (!currentImages[index]) return;
-  
   currentIndex = index;
   fsImage.src = currentImages[index].url;
-  fsImage.alt = currentImages[index].caption || `Image ${index + 1}`;
-  
-  imageCounter.textContent = `${index + 1}/${currentImages.length}`;
-  imageCaption.textContent = currentImages[index].caption || `Image ${index + 1}`;
-  
-  scale = 1;
-  translateX = 0;
-  translateY = 0;
-  updateTransform();
-  
+  fsImage.alt = currentImages[index].caption || `Image ${index+1}`;
+  imageCounter.textContent = `${index+1}/${currentImages.length}`;
+  imageCaption.textContent = currentImages[index].caption || `Image ${index+1}`;
+  scale = 1; translateX = 0; translateY = 0; updateTransform();
   fullscreen.classList.add("show");
-  fsImage.style.cursor = "grab";
 }
+function closeFullscreen() { fullscreen.classList.remove("show"); fsImage.src = ""; scale=1; translateX=0; translateY=0; updateTransform(); }
+function prevImage() { if (currentImages.length) { currentIndex = (currentIndex-1+currentImages.length)%currentImages.length; openFullscreen(currentIndex); } }
+function nextImage() { if (currentImages.length) { currentIndex = (currentIndex+1)%currentImages.length; openFullscreen(currentIndex); } }
+function updateTransform() { fsImage.style.transform = `translate3d(${translateX}px, ${translateY}px, 0) scale(${scale})`; }
 
-function closeFullscreen() {
-  fullscreen.classList.remove("show");
-  fsImage.src = "";
-  scale = 1;
-  translateX = 0;
-  translateY = 0;
+// Fullscreen zoom/pan
+fsImage.addEventListener("wheel", e => {
+  e.preventDefault();
+  const delta = -e.deltaY * 0.001;
+  const newScale = Math.min(Math.max(1, scale + delta), 5);
+  const rect = fsImage.getBoundingClientRect();
+  const offsetX = e.clientX - rect.left - rect.width/2;
+  const offsetY = e.clientY - rect.top - rect.height/2;
+  translateX -= offsetX * (newScale - scale);
+  translateY -= offsetY * (newScale - scale);
+  scale = newScale;
   updateTransform();
-}
-
-function prevImage() {
-  if (currentImages.length === 0) return;
-  currentIndex = (currentIndex - 1 + currentImages.length) % currentImages.length;
-  openFullscreen(currentIndex);
-}
-
-function nextImage() {
-  if (currentImages.length === 0) return;
-  currentIndex = (currentIndex + 1) % currentImages.length;
-  openFullscreen(currentIndex);
-}
-
-function updateTransform() {
-  fsImage.style.transform = `translate3d(${translateX}px, ${translateY}px, 0) scale(${scale})`;
-}
-
-/* ---------- EVENT HANDLERS ---------- */
-imageModal.addEventListener('click', (e) => {
-  if (e.target === imageModal) closeModal();
 });
-
-fullscreen.addEventListener('click', (e) => {
-  if (e.target === fullscreen) closeFullscreen();
+fsImage.addEventListener("mousedown", e => {
+  if (scale <= 1) return;
+  isDragging = true;
+  startX = e.clientX - translateX;
+  startY = e.clientY - translateY;
+  fsImage.style.cursor = "grabbing";
+  e.preventDefault();
 });
+document.addEventListener("mousemove", e => {
+  if (!isDragging) return;
+  translateX = e.clientX - startX;
+  translateY = e.clientY - startY;
+  updateTransform();
+});
+document.addEventListener("mouseup", () => { isDragging = false; fsImage.style.cursor = "grab"; });
+fsImage.addEventListener("dblclick", () => { scale = 1; translateX = 0; translateY = 0; updateTransform(); });
 
+// Keyboard shortcuts
 document.addEventListener("keydown", e => {
   if (e.key === "Escape") {
     if (fullscreen.classList.contains("show")) closeFullscreen();
@@ -2074,95 +1913,20 @@ document.addEventListener("keydown", e => {
     else if (e.key === "ArrowRight") nextImage();
   }
 });
+imageModal.addEventListener('click', e => { if (e.target === imageModal) closeModal(); });
+fullscreen.addEventListener('click', e => { if (e.target === fullscreen) closeFullscreen(); });
 
-fsImage.addEventListener("wheel", e => {
-  e.preventDefault();
-  const zoomIntensity = 0.001;
-  const delta = -e.deltaY * zoomIntensity;
-  const newScale = Math.min(Math.max(1, scale + delta), 5);
-  const rect = fsImage.getBoundingClientRect();
-  const offsetX = e.clientX - rect.left - rect.width / 2;
-  const offsetY = e.clientY - rect.top - rect.height / 2;
-  translateX -= offsetX * (newScale - scale);
-  translateY -= offsetY * (newScale - scale);
-  scale = newScale;
-  updateTransform();
-});
+function forceRefresh() { loadData(true); }
 
-fsImage.addEventListener("mousedown", e => {
-  if (scale <= 1) return;
-  isDragging = true;
-  startX = e.clientX - translateX;
-  startY = e.clientY - translateY;
-  fsImage.style.cursor = "grabbing";
-  e.preventDefault();
-});
-
-document.addEventListener("mousemove", e => {
-  if (!isDragging) return;
-  translateX = e.clientX - startX;
-  translateY = e.clientY - startY;
-  updateTransform();
-});
-
-document.addEventListener("mouseup", () => {
-  isDragging = false;
-  fsImage.style.cursor = "grab";
-});
-
-fsImage.addEventListener("dblclick", e => {
-  e.preventDefault();
-  scale = 1;
-  translateX = 0;
-  translateY = 0;
-  updateTransform();
-});
-
-/* ---------- MANUAL REFRESH ---------- */
-function forceRefresh() {
-  loadData(true);
-}
-
-/* ---------- PAGE VISIBILITY API ---------- */
 document.addEventListener('visibilitychange', () => {
   if (!document.hidden && memoryCache) {
     const cacheAge = Date.now() - memoryCache.timestamp;
-    if (cacheAge > 300000) { // 5 minutes
-      loadData(true);
-    }
+    if (cacheAge > 300000) loadData(true);
   }
 });
 
-/* ---------- INITIALIZATION ---------- */
-window.addEventListener('load', () => {
-  loadData();
-  window.addEventListener('beforeunload', () => {
-    if (refreshInterval) clearInterval(refreshInterval);
-  });
-});
-
-/* ---------- DEBUG FUNCTIONS ---------- */
-window.app = {
-  loadData: (force) => loadData(force),
-  clearCache,
-  filterTable,
-  openModal,
-  closeModal,
-  openFullscreen,
-  closeFullscreen,
-  prevImage,
-  nextImage,
-  getCacheInfo: () => {
-    const cached = getFromCache();
-    return {
-      hasCache: !!cached,
-      itemCount: cached ? cached.length : 0,
-      memoryCache: memoryCache,
-      isFromCache
-    };
-  }
-};
+window.addEventListener('load', () => { loadData(); });
+window.app = { loadData: (force) => loadData(force), clearCache, filterTable, openModal, closeModal };
 </script>
-
 </body>
 </html>
